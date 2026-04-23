@@ -148,6 +148,36 @@ class Memory(BaseModel):
     _pending_saves: list[Future[Any]] = PrivateAttr(default_factory=list)
     _pending_lock: threading.Lock = PrivateAttr(default_factory=threading.Lock)
 
+    def __deepcopy__(self, memo: dict[int, Any] | None = None) -> Memory:
+        """Deepcopy that handles unpickleable private attrs (ThreadPoolExecutor, Lock)."""
+        import copy as _copy
+
+        cls = type(self)
+        new = cls.__new__(cls)
+        if memo is None:
+            memo = {}
+        memo[id(self)] = new
+        object.__setattr__(new, "__dict__", _copy.deepcopy(self.__dict__, memo))
+        object.__setattr__(
+            new, "__pydantic_fields_set__", _copy.copy(self.__pydantic_fields_set__)
+        )
+        object.__setattr__(
+            new, "__pydantic_extra__", _copy.deepcopy(self.__pydantic_extra__, memo)
+        )
+        # Private attrs: create fresh pool/lock instead of deepcopying
+        private = {}
+        for k, v in (self.__pydantic_private__ or {}).items():
+            if isinstance(v, (ThreadPoolExecutor, threading.Lock)):
+                attr = self.__private_attributes__[k]
+                private[k] = attr.get_default()
+            else:
+                try:
+                    private[k] = _copy.deepcopy(v, memo)
+                except Exception:
+                    private[k] = v
+        object.__setattr__(new, "__pydantic_private__", private)
+        return new
+
     def model_post_init(self, __context: Any) -> None:
         """Initialize runtime state from field values."""
         self._config = MemoryConfig(
@@ -173,13 +203,18 @@ class Memory(BaseModel):
         )
 
         if isinstance(self.storage, str):
-            from crewai.memory.storage.lancedb_storage import LanceDBStorage
+            if self.storage == "qdrant-edge":
+                from crewai.memory.storage.qdrant_edge_storage import QdrantEdgeStorage
 
-            self._storage = (
-                LanceDBStorage()
-                if self.storage == "lancedb"
-                else LanceDBStorage(path=self.storage)
-            )
+                self._storage = QdrantEdgeStorage()
+            elif self.storage == "lancedb":
+                from crewai.memory.storage.lancedb_storage import LanceDBStorage
+
+                self._storage = LanceDBStorage()
+            else:
+                from crewai.memory.storage.lancedb_storage import LanceDBStorage
+
+                self._storage = LanceDBStorage(path=self.storage)
         else:
             self._storage = self.storage
 
@@ -293,8 +328,10 @@ class Memory(BaseModel):
             future.result()  # blocks until done; re-raises exceptions
 
     def close(self) -> None:
-        """Drain pending saves and shut down the background thread pool."""
+        """Drain pending saves, flush storage, and shut down the background thread pool."""
         self.drain_writes()
+        if hasattr(self._storage, "close"):
+            self._storage.close()
         self._save_pool.shutdown(wait=True)
 
     def _encode_batch(

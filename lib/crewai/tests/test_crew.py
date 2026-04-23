@@ -8,6 +8,7 @@ from concurrent.futures import Future
 from hashlib import md5
 import re
 import sys
+from typing import Any, cast
 from unittest.mock import ANY, MagicMock, call, patch
 
 from crewai.agent import Agent
@@ -17,6 +18,7 @@ from crewai.crew import Crew
 from crewai.crews.crew_output import CrewOutput
 from crewai.events.event_bus import crewai_event_bus
 from crewai.events.types.crew_events import (
+    CrewKickoffStartedEvent,
     CrewTestCompletedEvent,
     CrewTestStartedEvent,
     CrewTrainCompletedEvent,
@@ -48,7 +50,6 @@ from crewai.tools.agent_tools.add_image_tool import AddImageTool
 from crewai.types.usage_metrics import UsageMetrics
 from crewai.utilities.rpm_controller import RPMController
 from crewai.utilities.task_output_storage_handler import TaskOutputStorageHandler
-from crewai_tools import CodeInterpreterTool
 from pydantic import BaseModel, Field
 import pydantic_core
 import pytest
@@ -1648,11 +1649,8 @@ def test_code_execution_flag_adds_code_tool_upon_kickoff():
             _, kwargs = mock_execute_sync.call_args
             used_tools = kwargs["tools"]
 
-            # Verify that exactly one tool was used and it was a CodeInterpreterTool
-            assert len(used_tools) == 1, "Should have exactly one tool"
-            assert isinstance(used_tools[0], CodeInterpreterTool), (
-                "Tool should be CodeInterpreterTool"
-            )
+            # CodeInterpreterTool was removed; get_code_execution_tools() now returns []
+            assert len(used_tools) == 0, "Should have no tools (code execution tools are deprecated)"
 
 
 @pytest.mark.vcr()
@@ -2141,6 +2139,7 @@ def test_task_same_callback_both_on_task_and_crew():
 
 @pytest.mark.vcr()
 def test_tools_with_custom_caching():
+
     @tool
     def multiplcation_tool(first_number: int, second_number: int) -> int:
         """Useful for when you need to multiply two numbers together."""
@@ -3917,16 +3916,13 @@ def test_task_tools_preserve_code_execution_tools():
         assert any(isinstance(tool, TestTool) for tool in used_tools), (
             "Task's TestTool should be present"
         )
-        assert any(isinstance(tool, CodeInterpreterTool) for tool in used_tools), (
-            "CodeInterpreterTool should be present"
-        )
         assert any("delegate" in tool.name.lower() for tool in used_tools), (
             "Delegation tool should be present"
         )
 
-        # Verify the total number of tools (TestTool + CodeInterpreter + 2 delegation tools)
-        assert len(used_tools) == 4, (
-            "Should have TestTool, CodeInterpreter, and 2 delegation tools"
+        # Verify the total number of tools (TestTool + 2 delegation tools; CodeInterpreterTool removed)
+        assert len(used_tools) == 3, (
+            "Should have TestTool and 2 delegation tools"
         )
 
 
@@ -4745,6 +4741,61 @@ def test_default_crew_name(researcher, writer):
         ],
     )
     assert crew.name == "crew"
+
+
+@pytest.mark.parametrize(
+    "explicit_name,expected",
+    [
+        (None, "ResearchAutomation"),
+        ("My Research Automation", "My Research Automation"),
+    ],
+    ids=["class_name_from_decorator", "explicit_name_preserved"],
+)
+def test_crew_kickoff_started_emits_display_name(
+    researcher, writer, explicit_name, expected
+):
+    """Kickoff events should use the decorator-provided display name when implicit."""
+    from crewai.crews.utils import prepare_kickoff
+    from crewai.project import CrewBase, agent, crew, task
+
+    @CrewBase
+    class ResearchAutomation:
+        agents_config = None
+        tasks_config = None
+
+        @agent
+        def researcher(self):
+            return researcher
+
+        @task
+        def first_task(self):
+            return Task(
+                description="Task 1",
+                expected_output="output",
+                agent=self.researcher(),
+            )
+
+        @crew
+        def crew(self):
+            crew_kwargs: dict[str, Any] = {
+                "agents": self.agents,
+                "tasks": self.tasks,
+            }
+            if explicit_name is not None:
+                crew_kwargs["name"] = explicit_name
+            return Crew(**crew_kwargs)
+
+    captured: list[str | None] = []
+    with crewai_event_bus.scoped_handlers():
+
+        @crewai_event_bus.on(CrewKickoffStartedEvent)
+        def _capture(_source: Any, event: CrewKickoffStartedEvent) -> None:
+            captured.append(event.crew_name)
+
+        automation_cls = cast(type[Any], ResearchAutomation)
+        prepare_kickoff(cast(Any, automation_cls()).crew(), inputs=None)
+
+    assert captured == [expected]
 
 
 @pytest.mark.vcr()

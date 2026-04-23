@@ -1208,12 +1208,10 @@ def test_llm_call_with_error():
 def test_handle_context_length_exceeds_limit():
     # Import necessary modules
     from crewai.utilities.agent_utils import handle_context_length
-    from crewai.utilities.i18n import I18N
     from crewai.utilities.printer import Printer
 
     # Create mocks for dependencies
     printer = Printer()
-    i18n = I18N()
 
     # Create an agent just for its LLM
     agent = Agent(
@@ -1249,7 +1247,6 @@ def test_handle_context_length_exceeds_limit():
                 messages=messages,
                 llm=llm,
                 callbacks=callbacks,
-                i18n=i18n,
             )
 
         # Verify our patch was called and raised the correct error
@@ -1692,9 +1689,27 @@ def test_agent_with_knowledge_sources_works_with_copy():
         ) as mock_knowledge_storage:
             from crewai.knowledge.storage.base_knowledge_storage import BaseKnowledgeStorage
 
-            mock_knowledge_storage_instance = mock_knowledge_storage.return_value
-            mock_knowledge_storage_instance.__class__ = BaseKnowledgeStorage
-            agent.knowledge_storage = mock_knowledge_storage_instance
+            class _StubStorage(BaseKnowledgeStorage):
+                def search(self, query, limit=5, metadata_filter=None, score_threshold=0.6):
+                    return []
+
+                async def asearch(self, query, limit=5, metadata_filter=None, score_threshold=0.6):
+                    return []
+
+                def save(self, documents):
+                    pass
+
+                async def asave(self, documents):
+                    pass
+
+                def reset(self):
+                    pass
+
+                async def areset(self):
+                    pass
+
+            mock_knowledge_storage.return_value = _StubStorage()
+            agent.knowledge_storage = _StubStorage()
 
             agent_copy = agent.copy()
 
@@ -1976,7 +1991,7 @@ def test_litellm_anthropic_error_handling():
 @pytest.mark.vcr()
 def test_get_knowledge_search_query():
     """Test that _get_knowledge_search_query calls the LLM with the correct prompts."""
-    from crewai.utilities.i18n import I18N
+    from crewai.utilities.i18n import I18N_DEFAULT
 
     content = "The capital of France is Paris."
     string_source = StringKnowledgeSource(content=content)
@@ -1995,7 +2010,6 @@ def test_get_knowledge_search_query():
         agent=agent,
     )
 
-    i18n = I18N()
     task_prompt = task.prompt()
 
     with (
@@ -2032,13 +2046,13 @@ def test_get_knowledge_search_query():
             [
                 {
                     "role": "system",
-                    "content": i18n.slice(
+                    "content": I18N_DEFAULT.slice(
                         "knowledge_search_query_system_prompt"
                     ).format(task_prompt=task.description),
                 },
                 {
                     "role": "user",
-                    "content": i18n.slice("knowledge_search_query").format(
+                    "content": I18N_DEFAULT.slice("knowledge_search_query").format(
                         task_prompt=task_prompt
                     ),
                 },
