@@ -11351,6 +11351,1482 @@
       }
     },
     {
+      "description": "Store a document or plain text as a memory in a GoodMem space. Provide either a local file path (PDF, DOCX, images, etc.) or plain text content. The memory is chunked and embedded for semantic search.",
+      "env_vars": [
+        {
+          "default": null,
+          "description": "GoodMem API base URL",
+          "name": "GOODMEM_BASE_URL",
+          "required": true
+        },
+        {
+          "default": null,
+          "description": "GoodMem API key",
+          "name": "GOODMEM_API_KEY",
+          "required": true
+        }
+      ],
+      "humanized_name": "GoodMemCreateMemory",
+      "init_params_schema": {
+        "$defs": {
+          "EnvVar": {
+            "properties": {
+              "default": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Default"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "required": {
+                "default": true,
+                "title": "Required",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ],
+            "title": "EnvVar",
+            "type": "object"
+          }
+        },
+        "description": "Store a document or plain text as a new memory in a GoodMem space.\n\nThe memory is processed asynchronously -- chunked into searchable pieces\nand embedded into vectors. Accepts a local file path or plain text.",
+        "properties": {
+          "api_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Api Key"
+          },
+          "base_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Base Url"
+          },
+          "verify_ssl": {
+            "default": true,
+            "title": "Verify Ssl",
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "title": "GoodMemCreateMemoryTool",
+        "type": "object"
+      },
+      "name": "GoodMemCreateMemoryTool",
+      "package_dependencies": [],
+      "run_params_schema": {
+        "properties": {
+          "file_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Local file path to store as memory (PDF, DOCX, images, etc.). Content type is auto-detected from the file extension.",
+            "title": "File Path"
+          },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional key-value metadata as a JSON object.",
+            "title": "Metadata"
+          },
+          "space_id": {
+            "description": "The ID of the space to store the memory in.",
+            "title": "Space Id",
+            "type": "string"
+          },
+          "text_content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Plain text content to store as memory. If both file_path and text_content are provided, file_path takes priority.",
+            "title": "Text Content"
+          }
+        },
+        "required": [
+          "space_id"
+        ],
+        "title": "CreateMemorySchema",
+        "type": "object"
+      }
+    },
+    {
+      "description": "Create a new GoodMem space (container for memories) with an embedder and chunking configuration. If a space with the same name already exists it is reused.",
+      "env_vars": [
+        {
+          "default": null,
+          "description": "GoodMem API base URL",
+          "name": "GOODMEM_BASE_URL",
+          "required": true
+        },
+        {
+          "default": null,
+          "description": "GoodMem API key",
+          "name": "GOODMEM_API_KEY",
+          "required": true
+        }
+      ],
+      "humanized_name": "GoodMemCreateSpace",
+      "init_params_schema": {
+        "$defs": {
+          "EnvVar": {
+            "properties": {
+              "default": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Default"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "required": {
+                "default": true,
+                "title": "Required",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ],
+            "title": "EnvVar",
+            "type": "object"
+          }
+        },
+        "description": "Create a new GoodMem space, or reuse an existing one with the same name.\n\nA space is a logical container for related memories, configured with an\nembedder that converts text to vector embeddings.",
+        "properties": {
+          "api_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Api Key"
+          },
+          "base_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Base Url"
+          },
+          "verify_ssl": {
+            "default": true,
+            "title": "Verify Ssl",
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "title": "GoodMemCreateSpaceTool",
+        "type": "object"
+      },
+      "name": "GoodMemCreateSpaceTool",
+      "package_dependencies": [],
+      "run_params_schema": {
+        "properties": {
+          "chunk_overlap": {
+            "default": 25,
+            "description": "Number of overlapping characters between consecutive chunks.",
+            "title": "Chunk Overlap",
+            "type": "integer"
+          },
+          "chunk_size": {
+            "default": 256,
+            "description": "Number of characters per chunk when splitting documents.",
+            "title": "Chunk Size",
+            "type": "integer"
+          },
+          "embedder_id": {
+            "description": "The ID of the embedder model that converts text into vector representations for similarity search.",
+            "title": "Embedder Id",
+            "type": "string"
+          },
+          "keep_strategy": {
+            "default": "KEEP_END",
+            "description": "Where to attach the separator when splitting. One of KEEP_END, KEEP_START, DISCARD.",
+            "enum": [
+              "KEEP_END",
+              "KEEP_START",
+              "DISCARD"
+            ],
+            "title": "Keep Strategy",
+            "type": "string"
+          },
+          "length_measurement": {
+            "default": "CHARACTER_COUNT",
+            "description": "How chunk size is measured. One of CHARACTER_COUNT, TOKEN_COUNT.",
+            "enum": [
+              "CHARACTER_COUNT",
+              "TOKEN_COUNT"
+            ],
+            "title": "Length Measurement",
+            "type": "string"
+          },
+          "name": {
+            "description": "A unique name for the space. If a space with this name already exists, its ID is returned instead of creating a duplicate.",
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "embedder_id"
+        ],
+        "title": "CreateSpaceSchema",
+        "type": "object"
+      }
+    },
+    {
+      "description": "Permanently delete a memory and all its associated chunks and vector embeddings from GoodMem.",
+      "env_vars": [
+        {
+          "default": null,
+          "description": "GoodMem API base URL",
+          "name": "GOODMEM_BASE_URL",
+          "required": true
+        },
+        {
+          "default": null,
+          "description": "GoodMem API key",
+          "name": "GOODMEM_API_KEY",
+          "required": true
+        }
+      ],
+      "humanized_name": "GoodMemDeleteMemory",
+      "init_params_schema": {
+        "$defs": {
+          "EnvVar": {
+            "properties": {
+              "default": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Default"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "required": {
+                "default": true,
+                "title": "Required",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ],
+            "title": "EnvVar",
+            "type": "object"
+          }
+        },
+        "description": "Permanently delete a memory and its associated chunks and embeddings.",
+        "properties": {
+          "api_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Api Key"
+          },
+          "base_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Base Url"
+          },
+          "verify_ssl": {
+            "default": true,
+            "title": "Verify Ssl",
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "title": "GoodMemDeleteMemoryTool",
+        "type": "object"
+      },
+      "name": "GoodMemDeleteMemoryTool",
+      "package_dependencies": [],
+      "run_params_schema": {
+        "properties": {
+          "memory_id": {
+            "description": "The UUID of the memory to delete.",
+            "title": "Memory Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "memory_id"
+        ],
+        "title": "DeleteMemorySchema",
+        "type": "object"
+      }
+    },
+    {
+      "description": "Permanently delete a GoodMem space and all its memories, chunks, and vector embeddings. This operation cannot be undone.",
+      "env_vars": [
+        {
+          "default": null,
+          "description": "GoodMem API base URL",
+          "name": "GOODMEM_BASE_URL",
+          "required": true
+        },
+        {
+          "default": null,
+          "description": "GoodMem API key",
+          "name": "GOODMEM_API_KEY",
+          "required": true
+        }
+      ],
+      "humanized_name": "GoodMemDeleteSpace",
+      "init_params_schema": {
+        "$defs": {
+          "EnvVar": {
+            "properties": {
+              "default": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Default"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "required": {
+                "default": true,
+                "title": "Required",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ],
+            "title": "EnvVar",
+            "type": "object"
+          }
+        },
+        "description": "Permanently delete a space and all of its memories, chunks, and embeddings.",
+        "properties": {
+          "api_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Api Key"
+          },
+          "base_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Base Url"
+          },
+          "verify_ssl": {
+            "default": true,
+            "title": "Verify Ssl",
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "title": "GoodMemDeleteSpaceTool",
+        "type": "object"
+      },
+      "name": "GoodMemDeleteSpaceTool",
+      "package_dependencies": [],
+      "run_params_schema": {
+        "properties": {
+          "space_id": {
+            "description": "The UUID of the space to delete.",
+            "title": "Space Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "space_id"
+        ],
+        "title": "DeleteSpaceSchema",
+        "type": "object"
+      }
+    },
+    {
+      "description": "Fetch a specific memory by its ID, including metadata, processing status, and optionally the original content. Binary content is returned base64-encoded.",
+      "env_vars": [
+        {
+          "default": null,
+          "description": "GoodMem API base URL",
+          "name": "GOODMEM_BASE_URL",
+          "required": true
+        },
+        {
+          "default": null,
+          "description": "GoodMem API key",
+          "name": "GOODMEM_API_KEY",
+          "required": true
+        }
+      ],
+      "humanized_name": "GoodMemGetMemory",
+      "init_params_schema": {
+        "$defs": {
+          "EnvVar": {
+            "properties": {
+              "default": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Default"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "required": {
+                "default": true,
+                "title": "Required",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ],
+            "title": "EnvVar",
+            "type": "object"
+          }
+        },
+        "description": "Fetch a specific memory record by its ID from GoodMem.\n\nUses two endpoints: ``GET /v1/memories/{id}`` for metadata and\n``GET /v1/memories/{id}/content`` for original content. Binary content\n(e.g. PDFs, images) is base64-encoded so it can be safely returned as\nJSON; the ``contentEncoding`` field tells the caller which form to\nexpect.",
+        "properties": {
+          "api_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Api Key"
+          },
+          "base_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Base Url"
+          },
+          "verify_ssl": {
+            "default": true,
+            "title": "Verify Ssl",
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "title": "GoodMemGetMemoryTool",
+        "type": "object"
+      },
+      "name": "GoodMemGetMemoryTool",
+      "package_dependencies": [],
+      "run_params_schema": {
+        "properties": {
+          "include_content": {
+            "default": true,
+            "description": "Fetch the original document content in addition to metadata.",
+            "title": "Include Content",
+            "type": "boolean"
+          },
+          "memory_id": {
+            "description": "The UUID of the memory to fetch.",
+            "title": "Memory Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "memory_id"
+        ],
+        "title": "GetMemorySchema",
+        "type": "object"
+      }
+    },
+    {
+      "description": "Fetch a GoodMem space by its ID. Returns the full space configuration, including its embedders, chunking settings, and labels.",
+      "env_vars": [
+        {
+          "default": null,
+          "description": "GoodMem API base URL",
+          "name": "GOODMEM_BASE_URL",
+          "required": true
+        },
+        {
+          "default": null,
+          "description": "GoodMem API key",
+          "name": "GOODMEM_API_KEY",
+          "required": true
+        }
+      ],
+      "humanized_name": "GoodMemGetSpace",
+      "init_params_schema": {
+        "$defs": {
+          "EnvVar": {
+            "properties": {
+              "default": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Default"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "required": {
+                "default": true,
+                "title": "Required",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ],
+            "title": "EnvVar",
+            "type": "object"
+          }
+        },
+        "description": "Fetch a single space by its ID.\n\nReturns the space's full configuration, including its embedders, chunking\nsettings, and labels.",
+        "properties": {
+          "api_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Api Key"
+          },
+          "base_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Base Url"
+          },
+          "verify_ssl": {
+            "default": true,
+            "title": "Verify Ssl",
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "title": "GoodMemGetSpaceTool",
+        "type": "object"
+      },
+      "name": "GoodMemGetSpaceTool",
+      "package_dependencies": [],
+      "run_params_schema": {
+        "properties": {
+          "space_id": {
+            "description": "The UUID of the space to fetch.",
+            "title": "Space Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "space_id"
+        ],
+        "title": "GetSpaceSchema",
+        "type": "object"
+      }
+    },
+    {
+      "description": "List all available embedders in GoodMem. Returns embedder IDs, display names, and model identifiers that are required when creating a new space.",
+      "env_vars": [
+        {
+          "default": null,
+          "description": "GoodMem API base URL",
+          "name": "GOODMEM_BASE_URL",
+          "required": true
+        },
+        {
+          "default": null,
+          "description": "GoodMem API key",
+          "name": "GOODMEM_API_KEY",
+          "required": true
+        }
+      ],
+      "humanized_name": "GoodMemListEmbedders",
+      "init_params_schema": {
+        "$defs": {
+          "EnvVar": {
+            "properties": {
+              "default": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Default"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "required": {
+                "default": true,
+                "title": "Required",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ],
+            "title": "EnvVar",
+            "type": "object"
+          }
+        },
+        "description": "List all available embedders in GoodMem.\n\nEmbedder IDs are required when creating a new space. Use this tool to\ndiscover which embedder models are registered on the server.",
+        "properties": {
+          "api_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Api Key"
+          },
+          "base_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Base Url"
+          },
+          "verify_ssl": {
+            "default": true,
+            "title": "Verify Ssl",
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "title": "GoodMemListEmbeddersTool",
+        "type": "object"
+      },
+      "name": "GoodMemListEmbeddersTool",
+      "package_dependencies": [],
+      "run_params_schema": {
+        "properties": {},
+        "title": "ListEmbeddersSchema",
+        "type": "object"
+      }
+    },
+    {
+      "description": "List memories in a GoodMem space with optional filtering by processing status and sort order. Returns metadata and optionally each memory's original content.",
+      "env_vars": [
+        {
+          "default": null,
+          "description": "GoodMem API base URL",
+          "name": "GOODMEM_BASE_URL",
+          "required": true
+        },
+        {
+          "default": null,
+          "description": "GoodMem API key",
+          "name": "GOODMEM_API_KEY",
+          "required": true
+        }
+      ],
+      "humanized_name": "GoodMemListMemories",
+      "init_params_schema": {
+        "$defs": {
+          "EnvVar": {
+            "properties": {
+              "default": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Default"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "required": {
+                "default": true,
+                "title": "Required",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ],
+            "title": "EnvVar",
+            "type": "object"
+          }
+        },
+        "description": "List memories in a GoodMem space.\n\nReturns metadata for every memory stored in the given space, with optional\nfiltering by processing status and sorting. Set ``include_content=True``\nto receive each memory's original document content in the same call.",
+        "properties": {
+          "api_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Api Key"
+          },
+          "base_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Base Url"
+          },
+          "verify_ssl": {
+            "default": true,
+            "title": "Verify Ssl",
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "title": "GoodMemListMemoriesTool",
+        "type": "object"
+      },
+      "name": "GoodMemListMemoriesTool",
+      "package_dependencies": [],
+      "run_params_schema": {
+        "properties": {
+          "include_content": {
+            "default": false,
+            "description": "Include each memory's original content in addition to metadata.",
+            "title": "Include Content",
+            "type": "boolean"
+          },
+          "sort_by": {
+            "anyOf": [
+              {
+                "enum": [
+                  "created_at",
+                  "updated_at"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Field to sort by.",
+            "title": "Sort By"
+          },
+          "sort_order": {
+            "anyOf": [
+              {
+                "enum": [
+                  "ASCENDING",
+                  "DESCENDING"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Sort direction.",
+            "title": "Sort Order"
+          },
+          "space_id": {
+            "description": "The UUID of the space to list memories from.",
+            "title": "Space Id",
+            "type": "string"
+          },
+          "status_filter": {
+            "anyOf": [
+              {
+                "enum": [
+                  "PENDING",
+                  "PROCESSING",
+                  "COMPLETED",
+                  "FAILED"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Filter by processing status.",
+            "title": "Status Filter"
+          }
+        },
+        "required": [
+          "space_id"
+        ],
+        "title": "ListMemoriesSchema",
+        "type": "object"
+      }
+    },
+    {
+      "description": "List all available spaces in GoodMem. Returns space IDs, names, and attached embedders that can be used with other GoodMem tools.",
+      "env_vars": [
+        {
+          "default": null,
+          "description": "GoodMem API base URL",
+          "name": "GOODMEM_BASE_URL",
+          "required": true
+        },
+        {
+          "default": null,
+          "description": "GoodMem API key",
+          "name": "GOODMEM_API_KEY",
+          "required": true
+        }
+      ],
+      "humanized_name": "GoodMemListSpaces",
+      "init_params_schema": {
+        "$defs": {
+          "EnvVar": {
+            "properties": {
+              "default": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Default"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "required": {
+                "default": true,
+                "title": "Required",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ],
+            "title": "EnvVar",
+            "type": "object"
+          }
+        },
+        "description": "List all spaces in GoodMem.\n\nReturns each space's ID, name, and attached embedders. Useful for\ndiscovering space IDs before performing other operations.",
+        "properties": {
+          "api_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Api Key"
+          },
+          "base_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Base Url"
+          },
+          "verify_ssl": {
+            "default": true,
+            "title": "Verify Ssl",
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "title": "GoodMemListSpacesTool",
+        "type": "object"
+      },
+      "name": "GoodMemListSpacesTool",
+      "package_dependencies": [],
+      "run_params_schema": {
+        "properties": {},
+        "title": "ListSpacesSchema",
+        "type": "object"
+      }
+    },
+    {
+      "description": "Perform semantic search across one or more GoodMem spaces to find relevant memory chunks. Supports optional reranking, LLM-generated responses, chronological resort, and server-side metadata filters (SQL-style JSONPath expressions against memory metadata).",
+      "env_vars": [
+        {
+          "default": null,
+          "description": "GoodMem API base URL",
+          "name": "GOODMEM_BASE_URL",
+          "required": true
+        },
+        {
+          "default": null,
+          "description": "GoodMem API key",
+          "name": "GOODMEM_API_KEY",
+          "required": true
+        }
+      ],
+      "humanized_name": "GoodMemRetrieveMemories",
+      "init_params_schema": {
+        "$defs": {
+          "EnvVar": {
+            "properties": {
+              "default": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Default"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "required": {
+                "default": true,
+                "title": "Required",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ],
+            "title": "EnvVar",
+            "type": "object"
+          }
+        },
+        "description": "Perform similarity-based semantic retrieval across GoodMem spaces.\n\nReturns matching chunks ranked by relevance, with optional full memory\ndefinitions, reranking, LLM-generated contextual responses, and\nserver-side metadata filtering via JSONPath expressions.",
+        "properties": {
+          "api_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Api Key"
+          },
+          "base_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Base Url"
+          },
+          "verify_ssl": {
+            "default": true,
+            "title": "Verify Ssl",
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "title": "GoodMemRetrieveMemoriesTool",
+        "type": "object"
+      },
+      "name": "GoodMemRetrieveMemoriesTool",
+      "package_dependencies": [],
+      "run_params_schema": {
+        "properties": {
+          "chronological_resort": {
+            "default": false,
+            "description": "Reorder results by creation time instead of relevance score.",
+            "title": "Chronological Resort",
+            "type": "boolean"
+          },
+          "include_memory_definition": {
+            "default": true,
+            "description": "Fetch full memory metadata alongside matched chunks.",
+            "title": "Include Memory Definition",
+            "type": "boolean"
+          },
+          "llm_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional LLM ID to generate contextual responses alongside retrieved chunks.",
+            "title": "Llm Id"
+          },
+          "llm_temperature": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Creativity setting for LLM generation (0-2). Only used when llm_id is set.",
+            "title": "Llm Temperature"
+          },
+          "max_results": {
+            "default": 5,
+            "description": "Maximum number of results to return.",
+            "title": "Max Results",
+            "type": "integer"
+          },
+          "max_wait_seconds": {
+            "default": 10.0,
+            "description": "Maximum seconds to poll for results when wait_for_indexing is True.",
+            "title": "Max Wait Seconds",
+            "type": "number"
+          },
+          "metadata_filter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "A SQL-style JSONPath expression applied server-side to narrow results by metadata. Example: CAST(val('$.category') AS TEXT) = 'feat'. When set, the same filter is applied to every space in space_ids.",
+            "title": "Metadata Filter"
+          },
+          "poll_interval": {
+            "default": 2.0,
+            "description": "Seconds to sleep between polling attempts when wait_for_indexing is True.",
+            "title": "Poll Interval",
+            "type": "number"
+          },
+          "query": {
+            "description": "A natural language query used to find semantically similar memory chunks.",
+            "title": "Query",
+            "type": "string"
+          },
+          "relevance_threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Minimum score (0-1) for including results. Only used with reranker or LLM.",
+            "title": "Relevance Threshold"
+          },
+          "reranker_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional reranker model ID to improve result ordering.",
+            "title": "Reranker Id"
+          },
+          "space_ids": {
+            "description": "List of space IDs to search across.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Space Ids",
+            "type": "array"
+          },
+          "wait_for_indexing": {
+            "default": true,
+            "description": "Retry when no results are found, useful when memories were just added and may still be processing.",
+            "title": "Wait For Indexing",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "query",
+          "space_ids"
+        ],
+        "title": "RetrieveMemoriesSchema",
+        "type": "object"
+      }
+    },
+    {
+      "description": "Update a GoodMem space. Supports changing the name, toggling public read access, and replacing or merging metadata labels.",
+      "env_vars": [
+        {
+          "default": null,
+          "description": "GoodMem API base URL",
+          "name": "GOODMEM_BASE_URL",
+          "required": true
+        },
+        {
+          "default": null,
+          "description": "GoodMem API key",
+          "name": "GOODMEM_API_KEY",
+          "required": true
+        }
+      ],
+      "humanized_name": "GoodMemUpdateSpace",
+      "init_params_schema": {
+        "$defs": {
+          "EnvVar": {
+            "properties": {
+              "default": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Default"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "required": {
+                "default": true,
+                "title": "Required",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ],
+            "title": "EnvVar",
+            "type": "object"
+          }
+        },
+        "description": "Update a space's name, labels, or public-read setting.\n\nOnly fields explicitly provided are changed; omitted fields keep their\ncurrent values. ``replace_labels_json`` and ``merge_labels_json`` are\nmutually exclusive.",
+        "properties": {
+          "api_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Api Key"
+          },
+          "base_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Base Url"
+          },
+          "verify_ssl": {
+            "default": true,
+            "title": "Verify Ssl",
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "title": "GoodMemUpdateSpaceTool",
+        "type": "object"
+      },
+      "name": "GoodMemUpdateSpaceTool",
+      "package_dependencies": [],
+      "run_params_schema": {
+        "properties": {
+          "merge_labels_json": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "A JSON string of labels that merge into existing labels, e.g. '{\"team\": \"ml\"}'. Mutually exclusive with replace_labels_json.",
+            "title": "Merge Labels Json"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "New name for the space.",
+            "title": "Name"
+          },
+          "public_read": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Whether to allow unauthenticated read access.",
+            "title": "Public Read"
+          },
+          "replace_labels_json": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "A JSON string of labels that replace all existing labels, e.g. '{\"env\": \"prod\"}'. Mutually exclusive with merge_labels_json.",
+            "title": "Replace Labels Json"
+          },
+          "space_id": {
+            "description": "The UUID of the space to update.",
+            "title": "Space Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "space_id"
+        ],
+        "title": "UpdateSpaceSchema",
+        "type": "object"
+      }
+    },
+    {
       "description": "Scrape or crawl a website using Hyperbrowser and return the contents in properly formatted markdown or html",
       "env_vars": [
         {

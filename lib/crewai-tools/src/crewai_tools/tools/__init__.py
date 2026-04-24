@@ -84,6 +84,19 @@ from crewai_tools.tools.generate_crewai_automation_tool.generate_crewai_automati
     GenerateCrewaiAutomationTool,
 )
 from crewai_tools.tools.github_search_tool.github_search_tool import GithubSearchTool
+from crewai_tools.tools.goodmem_tool.goodmem_tool import (
+    GoodMemCreateMemoryTool,
+    GoodMemCreateSpaceTool,
+    GoodMemDeleteMemoryTool,
+    GoodMemDeleteSpaceTool,
+    GoodMemGetMemoryTool,
+    GoodMemGetSpaceTool,
+    GoodMemListEmbeddersTool,
+    GoodMemListMemoriesTool,
+    GoodMemListSpacesTool,
+    GoodMemRetrieveMemoriesTool,
+    GoodMemUpdateSpaceTool,
+)
 from crewai_tools.tools.hyperbrowser_load_tool.hyperbrowser_load_tool import (
     HyperbrowserLoadTool,
 )
@@ -244,6 +257,17 @@ __all__ = [
     "FirecrawlSearchTool",
     "GenerateCrewaiAutomationTool",
     "GithubSearchTool",
+    "GoodMemCreateMemoryTool",
+    "GoodMemCreateSpaceTool",
+    "GoodMemDeleteMemoryTool",
+    "GoodMemDeleteSpaceTool",
+    "GoodMemGetMemoryTool",
+    "GoodMemGetSpaceTool",
+    "GoodMemListEmbeddersTool",
+    "GoodMemListMemoriesTool",
+    "GoodMemListSpacesTool",
+    "GoodMemRetrieveMemoriesTool",
+    "GoodMemUpdateSpaceTool",
     "HyperbrowserLoadTool",
     "InvokeCrewAIAutomationTool",
     "JSONSearchTool",
